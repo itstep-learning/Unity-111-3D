@@ -1,10 +1,11 @@
-using System.Collections;
+п»їusing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CharacterScript : MonoBehaviour
 {
     private CharacterController characterController;
+    private float speed = 3f;
 
     void Start()
     {
@@ -13,26 +14,29 @@ public class CharacterScript : MonoBehaviour
 
     void Update()
     {
-        float dx = Input.GetAxis("Horizontal");
-        float dy = Input.GetAxis("Vertical");
-        // new Vector3(dx, 0, dy) - по Світових координатах: Х - завжди по "клітинках"
-        // вимагається - рух у відповідності до повороту камери
-        // осі камери задаються векторами forward та right
+        float dx = Input.GetAxis("Horizontal") * speed;
+        float dy = Input.GetAxis("Vertical") * speed;
+        if(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+        {
+            dx *= 2f;
+            dy *= 2f;
+        }
+        // new Vector3(dx, 0, dy) - РїРѕ РЎРІС–С‚РѕРІРёС… РєРѕРѕСЂРґРёРЅР°С‚Р°С…: РҐ - Р·Р°РІР¶РґРё РїРѕ "РєР»С–С‚РёРЅРєР°С…"
+        // РІРёРјР°РіР°С”С‚СЊСЃСЏ - СЂСѓС… Сѓ РІС–РґРїРѕРІС–РґРЅРѕСЃС‚С– РґРѕ РїРѕРІРѕСЂРѕС‚Сѓ РєР°РјРµСЂРё
+        // РѕСЃС– РєР°РјРµСЂРё Р·Р°РґР°СЋС‚СЊСЃСЏ РІРµРєС‚РѕСЂР°РјРё forward С‚Р° right
         characterController.SimpleMove(
             Camera.main.transform.forward * dy +
             Camera.main.transform.right * dx);
 
-        // повертаємо персонаж поглядом у напрямі камери
-        Vector3 f = Camera.main.transform.forward;  // вектор камери може бути нахиленим
-        f.y = 0f;   // проєкція на горизонтальну площину
-        f = f.normalized;  // призводимо до довжини = 1
+        // РїРѕРІРµСЂС‚Р°С”РјРѕ РїРµСЂСЃРѕРЅР°Р¶ РїРѕРіР»СЏРґРѕРј Сѓ РЅР°РїСЂСЏРјС– РєР°РјРµСЂРё
+        Vector3 f = Camera.main.transform.forward;  // РІРµРєС‚РѕСЂ РєР°РјРµСЂРё РјРѕР¶Рµ Р±СѓС‚Рё РЅР°С…РёР»РµРЅРёРј
+        f.y = 0f;   // РїСЂРѕС”РєС†С–СЏ РЅР° РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅСѓ РїР»РѕС‰РёРЅСѓ
+        f = f.normalized;  // РїСЂРёР·РІРѕРґРёРјРѕ РґРѕ РґРѕРІР¶РёРЅРё = 1
         this.transform.forward = f;
     }
 }
-/* Д.З. Обмежити кути вертикального повороту
- * камери (через управління мишою)
- * орієнтовні кути: від 25..30 (униз) до -35..-40 (угору)
- * по горизонталі - без обмежень, але якщо кут збільшується 
- * понад 360, то корегувати - віднімати 360. Аналогічно якщо
- * менше -360
+/* Р”.Р—. РљРѕРјРїРѕР·РёС†С–СЏ Р»РѕРєР°С†С–С—
+ * Р РµР°Р»С–Р·СѓРІР°С‚Рё РґРёР·Р°Р№РЅ Р»РѕРєР°С†С–С— - Р»Р°РЅРґС€Р°С„С‚, 
+ * С‚РѕРїРѕР»РѕРіС–СЋ, РґРµРєРѕСЂР°С†С–С—. Р’РёРєРѕСЂРёСЃС‚РѕРІСѓРІР°С‚Рё
+ * Asset Store
  */
