@@ -28,7 +28,21 @@ public class CoinScript : MonoBehaviour
     }
     public void OnDisappear()   // On Animation Finished
     {
-        Vector3 newPosition = transform.position + Vector3.forward * 3f;
+        Vector3 newPosition ;
+        do
+        {
+            newPosition = transform.position + new Vector3(
+                Random.Range(-40f, 40f),
+                0f,
+                Random.Range(-40f, 40f));
+        }
+        while ((newPosition - transform.position).magnitude < 20f
+        || (newPosition - transform.position).magnitude > 40f
+        || newPosition.x < 100f
+        || newPosition.x > 900f
+        || newPosition.z < 100f
+        || newPosition.z > 900f);
+
         newPosition.y = Terrain.activeTerrain.SampleHeight(newPosition) + 
             initialCoinHeight;
         transform.position = newPosition;
