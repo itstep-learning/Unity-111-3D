@@ -9,11 +9,13 @@ public class CameraScript : MonoBehaviour
 
     float angleX;  // Кути повороту камери, що є 
     float angleY;  // накопиченням зрушень миші
+    Vector3 rod;   // "стрижень" - відстань від камери до точки кріплення (cameraAnchor)
 
     void Start()
     {
         angleX = transform.eulerAngles.x;   // початкові значення - 
         angleY = transform.eulerAngles.y;   // як у редакторі
+        rod = this.transform.position - cameraAnchor.transform.position;
     }
 
     void LateUpdate()
@@ -24,6 +26,7 @@ public class CameraScript : MonoBehaviour
         angleY += mx;
         this.transform.eulerAngles = new Vector3(angleX, angleY, 0);
 
-        this.transform.position = cameraAnchor.transform.position;
+        this.transform.position = cameraAnchor.transform.position +
+            Quaternion.Euler(0,angleY,0) * rod;
     }
 }

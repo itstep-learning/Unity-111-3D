@@ -4,29 +4,42 @@ using UnityEngine;
 
 public class CharacterScript : MonoBehaviour
 {
+    private Animator animator;
     private CharacterController characterController;
     private float speed = 3f;
 
     void Start()
     {
+        animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
     }
 
     void Update()
     {
+        int moveState = 0;
         float dx = Input.GetAxis("Horizontal") * speed;
-        float dy = Input.GetAxis("Vertical") * speed;
-        if(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
-        {
-            dx *= 2f;
-            dy *= 2f;
-        }
+        float dy = Input.GetAxis("Vertical") * speed;        
         // new Vector3(dx, 0, dy) - по Світових координатах: Х - завжди по "клітинках"
         // вимагається - рух у відповідності до повороту камери
         // осі камери задаються векторами forward та right
-        characterController.SimpleMove(
+        Vector3 step =
             Camera.main.transform.forward * dy +
-            Camera.main.transform.right * dx);
+            Camera.main.transform.right * dx;
+        if(step.magnitude < 0.01f)
+        {
+            moveState = 0;
+        }
+        else if(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+        {
+            step *= 2f;
+            moveState = 2;  // RunForward
+        }
+        else
+        {
+            moveState = 1;
+        }
+        characterController.SimpleMove(step);
+        animator.SetInteger("State", moveState);
 
         // повертаємо персонаж поглядом у напрямі камери
         Vector3 f = Camera.main.transform.forward;  // вектор камери може бути нахиленим
