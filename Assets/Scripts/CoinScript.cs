@@ -6,10 +6,13 @@ public class CoinScript : MonoBehaviour
 {
     private Animator animator;
     private float initialCoinHeight;
+    private AudioSource collectCoinSound;
 
     void Start()
     {
         animator = GetComponent<Animator>();
+        collectCoinSound = GetComponent<AudioSource>();
+
         initialCoinHeight = transform.position.y - 
             Terrain.activeTerrain.SampleHeight(transform.position);
     }
@@ -24,6 +27,7 @@ public class CoinScript : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             animator.SetBool("IsCollected", true);
+            collectCoinSound.Play();
         }
     }
     public void OnDisappear()   // On Animation Finished

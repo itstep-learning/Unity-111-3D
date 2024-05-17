@@ -7,11 +7,13 @@ public class CharacterScript : MonoBehaviour
     private Animator animator;
     private CharacterController characterController;
     private float speed = 3f;
+    private AudioSource stepsSound;
 
     void Start()
     {
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
+        stepsSound = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -40,12 +42,28 @@ public class CharacterScript : MonoBehaviour
         }
         characterController.SimpleMove(step);
         animator.SetInteger("State", moveState);
+        if(moveState == 1)
+        {
+            if ( ! stepsSound.isPlaying)
+            {
+                stepsSound.Play();
+            }
+        }
+        else
+        {
+            stepsSound.Stop();
+        }
 
         // повертаємо персонаж поглядом у напрямі камери
         Vector3 f = Camera.main.transform.forward;  // вектор камери може бути нахиленим
         f.y = 0f;   // проєкція на горизонтальну площину
         f = f.normalized;  // призводимо до довжини = 1
         this.transform.forward = f;
+    }
+
+    public void PlayOneStepSound()
+    {
+        // Debug.Log("Step Sound");
     }
 }
 /* Д.З. Композиція локації
